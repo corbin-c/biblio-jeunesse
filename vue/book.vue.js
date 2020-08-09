@@ -42,6 +42,20 @@ let bookView = {
       return "mx-2 my-1 btn btn-outline-"
         +colors[Math.floor(Math.random()*colors.length)];
     },
+    getLinkData(url) {
+      return [
+        {
+          name:"Babelio",
+          classes:"card-link btn mx-1 btn-warning",
+          url:"babelio.com"
+        },
+        {
+          name:"la BnF",
+          classes:"card-link btn mx-1 btn-info",
+          url:"catalogue.bnf.fr"
+        }
+      ].find(link => url.includes(link.url));
+    },
     getClass(element) {
       let classes;
       if (this.zoom) {
@@ -94,7 +108,7 @@ let bookView = {
         <div class="card-body border-bottom">
           <button
             title="Afficher un autre résumé"
-            class="m-2 btn btn-outline-primary svg-btn float-right"
+            class="mx-2 mb-2 mt-0 btn btn-outline-primary svg-btn float-right"
             v-on:click="changeSummary">
             <svg class="d-inline">
               <use xlink:href="/octicons-sprite/octicons-sprite.svg#sync-24"></use>
@@ -155,6 +169,18 @@ let bookView = {
                   </v-link>
                 </li>
               </ul>
+          </li>
+          <li
+            v-if="book.links.length > 0"
+            class="list-group-item"><strong>En savoir plus :</strong>
+                <a
+                  v-for="link in book.links"
+                  v-bind:href="link"
+                  v-bind:title="'En savoir plus sur le site '+getLinkData(link).name"
+                  v-bind:class="getLinkData(link).classes"
+                  role="button">
+                  {{ getLinkData(link).name }}
+                </a>
           </li>
         </ul>
       </div>
