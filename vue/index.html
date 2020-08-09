@@ -59,9 +59,6 @@ let shuffle = (array) => {
   }
   return array;
 };
-if (window.location.search !== "") {
-  window.location = "/biblio-jeunesse/vue"+window.location.search.slice(1);
-}
 (async () => {
   let app = new Vue({
     el: '#app',
@@ -121,6 +118,9 @@ if (window.location.search !== "") {
   });
   document.querySelector(".loader").remove();
   document.querySelector("#app").classList.remove("invisible");
+  if (window.location.search !== "") {
+    app.currentRoute = window.location.search.slice(1);
+  }
 })();
 </script>
 </html>
