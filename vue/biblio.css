@@ -29,10 +29,30 @@ header a:hover {
 footer {
   background: white;
 }
-.ul404 svg {
+.ul404 svg, .svg-btn svg {
   width: 24px;
   height: 24px;
 }
 .img-thumbnail {
   width: 100%;
+}
+.blur {
+  filter: blur(3px);
+}
+.img-container {
+  position: absolute;
+  z-index: 2;
+  top: 10vh;
+  left: 0;
+  margin: 0;
+  width: 100%;
+}
+.img-container .img-thumbnail {
+  width: max-content;
+}
+.img-container img {
+  height: 80vh;
+}
+section {
+  margin-bottom: 4rem;
 }
