@@ -120,6 +120,11 @@ let shuffle = (array) => {
   document.querySelector("#app").classList.remove("invisible");
   if (window.location.search !== "") {
     app.currentRoute = window.location.search.slice(1);
+    window.history.pushState(
+      null,
+      "/biblio-jeunesse/vue"+window.location.search.slice(1),
+      "/biblio-jeunesse/vue"+window.location.search.slice(1)
+    )
   }
 })();
 </script>
