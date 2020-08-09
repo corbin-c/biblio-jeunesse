@@ -6,7 +6,8 @@ let bookView = {
       book: this.$root.collection.find(e => e.id == this.id),
       zoom: false,
       summaryShown: 0,
-      contributors: this.$root.authors.findByContributions(this.id)
+      contributors: this.$root.authors.findByContributions(this.id),
+      maxImg: {}
     }
   },
   components: {
@@ -14,7 +15,6 @@ let bookView = {
   },
   methods: {
     getRole(contributor) {
-      console.log(contributor);
       return this.$root.authors
         .getRole(contributor.contributions.find(e => e.bookId == this.id).role);
     },
@@ -56,6 +56,14 @@ let bookView = {
         }
       ].find(link => url.includes(link.url));
     },
+    getImageSize() {
+      let img = document.querySelector("#thumbnail");
+      if (window.innerHeight*0.8*(img.naturalWidth/img.naturalHeight) >= window.innerWidth) {
+        this.maxImg = { width: "80vw" };
+      } else {
+        this.maxImg = { height: "80vh" };
+      } 
+    },
     getClass(element) {
       let classes;
       if (this.zoom) {
@@ -74,6 +82,7 @@ let bookView = {
   },
   mounted: function() {
     window.document.title = this.$root.appName+" - "+this.book.title;
+    this.getImageSize();
   },
   props: ["id"],
   template: `
@@ -83,7 +92,8 @@ let bookView = {
         <img
           v-if="typeof book.cover !== 'undefined'"
           v-bind:src="book.cover"
-          class="rounded">
+          class="rounded"
+          v-bind:style="maxImg">
       </div>
     </article>
     <article v-bind:class="getClass('content')">
