@@ -63,7 +63,7 @@ let authorView = {
     window.document.title = this.$root.appName+" - "+this.author.preferredName;
   },
   props: ["name"],
-  template: `<article class="fluid-container p-3">
+  template: `<article class="p-3">
     <details open class="card p-0 col-lg-5">
       <summary class="alert alert-primary mb-0 h2">{{ author.preferredName }}</summary>
       <ul class="list-group list-group-flush">

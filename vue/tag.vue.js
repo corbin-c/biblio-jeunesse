@@ -22,7 +22,7 @@ let tagView = {
     window.document.title = this.$root.appName+" - "+this.decodedTag;
   },
   props: ["tag"],
-  template: `<article class="fluid-container p-3">
+  template: `<article class="p-3">
     <h2 class="alert alert-primary mb-2 col-lg-5">
       {{ decodedTag }}
     </h2>

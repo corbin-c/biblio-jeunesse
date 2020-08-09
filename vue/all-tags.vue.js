@@ -61,7 +61,7 @@ let allTags = {
     }
   },
   template: `
-  <section class="fluid-container p-3">
+  <section class="p-3">
     <ul class="inline p-0 d-flex flex-wrap justify-content-center align-items-center">
       <li v-for="tag in tags">
         <v-link

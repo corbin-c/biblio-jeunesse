@@ -161,7 +161,7 @@ let publisherView = {
     window.document.title = this.$root.appName+" - "+this.publisher.name;
   },
   props: ["name"],
-  template: `<article class="fluid-container p-3">
+  template: `<article class="p-3">
     <h2 class="alert alert-primary mb-2 col-lg-5">{{publisher.name}}
     <a v-if="publisher.link.length > 0"
       v-bind:href="publisher.link"
