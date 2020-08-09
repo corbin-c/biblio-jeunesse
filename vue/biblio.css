@@ -33,3 +33,6 @@ footer {
   width: 24px;
   height: 24px;
 }
+.img-thumbnail {
+  width: 100%;
+}
