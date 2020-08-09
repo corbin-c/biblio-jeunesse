@@ -2,11 +2,14 @@
   display: inline;
   list-style: none outside;
 }
-.btn-group-toggle svg {
+.btn-group-toggle svg, .btn-outline-primary svg {
   fill: var(--blue);
 }
-.btn-group-toggle .active svg, .btn-group-toggle .btn:hover svg {
+.btn-group-toggle .active svg, .btn:hover svg {
   fill: white;
+}
+.btn-outline-success svg {
+  fill: var(--success);
 }
 .loader {
   margin-top: 40vh;
@@ -14,7 +17,7 @@
   width: 10rem;
   height: 10rem;
 }
-#mainView li {
+#mainView li, .ul404 li {
   list-style: none outside;
 }
 .card img  {
@@ -25,4 +28,8 @@ header a:hover {
 }
 footer {
   background: white;
+}
+.ul404 svg {
+  width: 24px;
+  height: 24px;
 }
