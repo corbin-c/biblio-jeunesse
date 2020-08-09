@@ -119,14 +119,18 @@ let bookView = {
               {{ book.description.join(", ") }}
           </li>
           <li
-            v-if="book.publisher.name.length > 0"
+            v-if="book.pages.length > 0"
             class="list-group-item"><strong>Nombre de pages :</strong>
               {{ book.pages.sort((a,b) => b.length - a.length)[0] }}
           </li>
           <li
             v-if="book.publisher.name.length > 0"
             class="list-group-item"><strong>Éditeur :</strong>
-              {{ book.publisher.name }}
+              <v-link 
+                v-bind:href="'publisher/'+book.publisher.name.replace(/ /g,'_')"
+                v-bind:title="'Consulter la fiche éditeur '+book.publisher.name">
+                {{ book.publisher.name }}
+              </v-link>
           </li>
           <li
             v-if="book.collection.length > 0"
