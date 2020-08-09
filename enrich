@@ -215,11 +215,12 @@ let main = async () => {
     output.books = [...output.books,...input];
     output = enrichAuthors(output,input);
     fs.writeFileSync(ARGS.output, JSON.stringify(output));
+    fs.writeFileSync("./lastupd", (new Date()).valueOf());
     console.info(`Taux de succès global à `+Math.round(success/input.length*100)+`%,
 le fichier de sortie `+ARGS.output+` a été complété.
 ---
 Vous devriez désormais conserver et pousser ces modifications :
-git commit `+ARGS.output+` -m "ajout de `+input.length+` ouvrage`
+git commit `+ARGS.output+` lastupd -m "ajout de `+input.length+` ouvrage`
 +((input.length > 1) ? "s":"")+`"
 git push origin master`);
   }

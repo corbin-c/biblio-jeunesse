@@ -178,7 +178,7 @@ let bookView = {
                   v-bind:href="link"
                   v-bind:title="'En savoir plus sur le site '+getLinkData(link).name"
                   v-bind:class="getLinkData(link).classes"
-                  role="button">
+                  role="button" target="_blank">
                   {{ getLinkData(link).name }}
                 </a>
           </li>

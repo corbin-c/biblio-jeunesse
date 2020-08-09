@@ -38,7 +38,7 @@
         </v-link>
       </header>
       <main>
-        <app-router v-bind:route="currentRoute"></main-layout>
+        <app-router v-bind:route="currentRoute"></app-router>
       </main>
       <footer class="fixed-bottom text-right border-top border-primary p-1">
         <small class="p-2">
@@ -51,8 +51,7 @@
 import { Biblio } from "/biblio-jeunesse/vue/biblio.js";
 import { appRouter } from "/biblio-jeunesse/vue/router.vue.js";
 import { vLink } from "/biblio-jeunesse/vue/vlink.vue.js";
-
-let bib = new Biblio("/biblio-jeunesse/biblio.min.json");
+let bib = new Biblio("/biblio-jeunesse/biblio.min.json","/biblio-jeunesse/lastupd");
 let shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -119,6 +118,9 @@ let shuffle = (array) => {
   });
   document.querySelector(".loader").remove();
   document.querySelector("#app").classList.remove("invisible");
+  if (window.location.search !== "") {
+    app.currentRoute = window.location.search.slice(1);
+  }
 })();
 </script>
 </html>
