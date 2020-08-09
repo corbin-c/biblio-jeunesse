@@ -38,7 +38,6 @@ let allTags = {
       let threshold = [...this.tags]
         .sort((a,b) => b.count-a.count)[0]
         .count/maxSizes;
-      console.log(sizes);
       sizes = sizes.map((e,i) => 
         [Math.floor(threshold*i),Math.ceil(threshold*(i+1))]
       );
