@@ -5,11 +5,8 @@
     <meta charset="utf-8">
     <title>Biblio jeunesse</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<!--
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
--->
     <link rel="stylesheet" href="/biblio-jeunesse/vue/biblio.css">
-    <script src="/biblio-jeunesse/vue/vue.js"></script>
   </head>
   <body>
     <div class="spinner-border text-danger mx-auto loader"></div>
@@ -36,7 +33,7 @@
       </main>
       <footer class="fixed-bottom text-right border-top border-primary p-1">
         <small class="p-2">
-          Développé par <a href="https://wwww.github.com/corbin-c" title="Consulter le profil Github du développeur">Clément Corbin</a>
+          Développé par <a href="https://github.com/corbin-c" title="Consulter le profil Github du développeur">Clément Corbin</a>
         </small>
       </footer>
     </div>
@@ -46,7 +43,7 @@ import { Biblio } from "/biblio-jeunesse/vue/biblio.js";
 import { appRouter } from "/biblio-jeunesse/vue/router.vue.js";
 import { vLink } from "/biblio-jeunesse/vue/vlink.vue.js";
 
-let bib = new Biblio("/biblio-jeunesse/output.min.json");
+let bib = new Biblio("/biblio-jeunesse/biblio.min.json");
 let shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
