@@ -57,6 +57,9 @@ let Authors = class {
   constructor(authors) {
     this.list = authors;
   }
+  getRole(roleId) {
+    return intermarcRoles[roleId];
+  }
   getRoles(contributions) {
     return [...new Set(contributions.map(e => {
       if (!isNaN(parseInt(e.role))) {
@@ -166,7 +169,7 @@ let Book = class {
     return this.getFromRaw("pages");
   }
   get description() {
-    return this.getFromRaw("format","description_physique");
+    return this.getFromRaw("format","description_physique","presentation","poids","dimension");
   }
   get price() {
     return this.getFromRaw("prix");
