@@ -15,8 +15,8 @@ let vLink = {
       this.$root.currentRoute = "/"+this.href
       window.history.pushState(
         null,
-        this.href,
-        this.href
+        "/biblio-jeunesse/vue/"+this.href,
+        "/biblio-jeunesse/vue/"+this.href
       )
     }
   },
