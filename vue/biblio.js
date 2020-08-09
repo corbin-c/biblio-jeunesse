@@ -97,7 +97,9 @@ let Book = class {
       }
       if (this.raw.enriched) {
         Object.keys(this.raw.enrichments).map(source => {
-          if (typeof this.raw.enrichments[source][field] !== "undefined") {
+          if ((typeof this.raw.enrichments[source][field] !== "undefined")
+            && (this.raw.enrichments[source][field] !== null)
+            && (this.raw.enrichments[source][field].length > 0)) {
             out.push(this.raw.enrichments[source][field]);
           }
         });
