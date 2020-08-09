@@ -1,4 +1,4 @@
-import { vLink } from "/biblio-jeunesse/vue/vlink.vue.js";
+import { vLink } from "./vlink.vue.js";
 let notFound = {
   methods: {
     back() {
