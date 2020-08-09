@@ -73,16 +73,17 @@ let listItem = {
   <ul v-bind:class="getViewClass('authors')">
     <li v-for="(author,index) in book.authors.raw" v-bind:key="author">
       <v-link 
-        v-bind:href="'/biblio-jeunesse/vue/author/'+author.replace(/ /g,'_')">
+        v-bind:href="'author/'+author.replace(/ /g,'_')"
+        v-bind:title="'Consulter la fiche de '+author">
         {{ author }}
       </v-link><span v-if="index+1 < book.authors.raw.length"> & </span>
     </li>
   </ul>
   <p v-bind:class="getViewClass('summary')">{{ book.summary[0] }}</p>
-  <p v-bind:class="getViewClass('tags')">{{ Object.values(book.myTags[0]).join(" | ") }}</p>
   <v-link
     v-bind:class="getViewClass('link')"
-    v-bind:href="'/biblio-jeunesse/vue/book/'+book.id"
+    v-bind:title="'Consulter la fiche détaillée pour cet ouvrage'"
+    v-bind:href="'book/'+book.id"
     role="button">
     Voir plus !
   </v-link>

@@ -65,7 +65,8 @@ let allTags = {
     <ul class="inline p-0 d-flex flex-wrap justify-content-center align-items-center">
       <li v-for="tag in tags">
         <v-link
-          v-bind:href="'/biblio-jeunesse/vue/tag/'+tag.name.replace(/ /g,'_')"
+          v-bind:href="'tag/'+tag.name.replace(/ /g,'_')"
+          v-bind:title="'Consulter les livres associés à ce mot-clé : '+tag.name"
           v-bind:class="getClass()"
           v-bind:style="getStyle(tag.count)">
           {{ tag.name }}

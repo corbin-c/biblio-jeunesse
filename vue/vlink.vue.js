@@ -3,12 +3,16 @@ let vLink = {
     href: {
       type:String,
       required: true 
+    },
+    title: {
+      type:String,
+      required: false
     }
   },
   methods: {
     go (event) {
       event.preventDefault()
-      this.$root.currentRoute = this.href.slice(20)
+      this.$root.currentRoute = "/"+this.href
       window.history.pushState(
         null,
         this.href,
@@ -17,7 +21,8 @@ let vLink = {
     }
   },
   template: `<a
-    v-bind:href="href"
+    v-bind:href="'/biblio-jeunesse/vue/'+href"
+    v-bind:title="title"
     v-on:click="go">
   <slot></slot>
   </a>`

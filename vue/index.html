@@ -13,9 +13,13 @@
     <div id="app" class="container-fluid invisible">
       <header class="row border-bottom border-primary">
         <h1 class="col display-3 text-primary" v-on:click="backHome">
-          <v-link v-bind:href="'/biblio-jeunesse/vue/'">{{ appName }}</v-link>
+          <v-link
+            v-bind:href="''"
+            v-bind:title="'Retour au début !'">
+            {{ appName }}
+          </v-link>
         </h1>
-        <form class="col-lg form-inline justify-content-center">
+        <form class="col-xl form-inline justify-content-center">
           <input type="text" name="recherche" class="form-control mb-2 mr-sm-2" placeholder="recherche..." v-on:keyup="search">
           <select v-on:change="changeScope" class="form-control mb-2 mr-sm-2">
             <option value="all">Tout</option>
@@ -26,7 +30,12 @@
             <option value="summary">Résumé</option>
           </select>
         </form>
-        <v-link class="col-lg align-self-center text-center" v-bind:href="'/biblio-jeunesse/vue/tags/'">Mots-clés</v-link>
+        <v-link
+          class="col-lg align-self-center text-center"
+          v-bind:title="'Consulter la liste des mots-clés'"
+          v-bind:href="'tags/'">
+          Mots-clés
+        </v-link>
       </header>
       <main>
         <app-router v-bind:route="currentRoute"></main-layout>
@@ -79,6 +88,11 @@ let shuffle = (array) => {
       },
       backHome: function() {
         document.querySelector("input").value = "";
+        window.history.pushState(
+          null,
+          "/",
+          "/"
+        )
         this.collection = shuffle(this.collection);
         this.$emit("search",
           { term: "",

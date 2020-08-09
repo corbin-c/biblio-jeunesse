@@ -25,7 +25,8 @@ let notFound = {
     </li>
     <li class="p-2">
       <v-link
-        v-bind:href="'/biblio-jeunesse/vue/'"
+        v-bind:href="''"
+        v-bind:title="'Retour au début !'"
         class="btn btn-outline-success"
         role="button">
       Aller à l'accueil

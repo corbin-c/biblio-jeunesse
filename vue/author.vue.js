@@ -81,7 +81,8 @@ let authorView = {
           <ul class="d-inline inline p-0">
             <li v-for="(name,index) in contributors">
               <v-link 
-                v-bind:href="'/biblio-jeunesse/vue/author/'+name.replace(/ /g,'_')">
+                v-bind:href="'author/'+name.replace(/ /g,'_')"
+                v-bind:title="'Consulter la fiche de '+name">
                 {{ name }}
               </v-link>
               <span v-if="index+1 < contributors.length">, </span>
@@ -104,7 +105,8 @@ let authorView = {
           <ul class="d-inline inline p-0">
             <li v-for="(name,index) in publishers">
               <v-link 
-                v-bind:href="'/biblio-jeunesse/vue/publisher/'+name.replace(/ /g,'_')">
+                v-bind:href="'publisher/'+name.replace(/ /g,'_')"
+                v-bind:title="'Consulter la fiche éditeur '+name">
                 {{ name }}
               </v-link>
               <span v-if="index+1 < publishers.length">, </span>
