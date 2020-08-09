@@ -60,7 +60,7 @@ let shuffle = (array) => {
   return array;
 };
 if (window.location.search !== "") {
-  window.location = "/biblio-jeunesse/vue/"+window.location.search.slice(1);
+  window.location = "/biblio-jeunesse/vue"+window.location.search.slice(1);
 }
 (async () => {
   let app = new Vue({
