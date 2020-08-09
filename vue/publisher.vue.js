@@ -153,7 +153,6 @@ let publisherView = {
           break;
         }
       }
-      console.log(pub.publications.map(e => e.allPublishers));
       return pub;
     }
   },
