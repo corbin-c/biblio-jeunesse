@@ -1,0 +1,28 @@
+.inline li {
+  display: inline;
+  list-style: none outside;
+}
+.btn-group-toggle svg {
+  fill: var(--blue);
+}
+.btn-group-toggle .active svg, .btn-group-toggle .btn:hover svg {
+  fill: white;
+}
+.loader {
+  margin-top: 40vh;
+  display: block;
+  width: 10rem;
+  height: 10rem;
+}
+#mainView li {
+  list-style: none outside;
+}
+.card img  {
+  height: max-content;
+}
+header a:hover {
+  text-decoration: none;
+}
+footer {
+  background: white;
+}

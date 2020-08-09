@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Biblio jeunesse</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<!--
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+-->
+    <link rel="stylesheet" href="/biblio-jeunesse/vue/biblio.css">
+    <script src="/biblio-jeunesse/vue/vue.js"></script>
+  </head>
+  <body>
+    <div class="spinner-border text-danger mx-auto loader"></div>
+    <div id="app" class="container-fluid invisible">
+      <header class="row border-bottom border-primary">
+        <h1 class="col display-3 text-primary" v-on:click="backHome">
+          <v-link v-bind:href="'/biblio-jeunesse/vue/'">{{ appName }}</v-link>
+        </h1>
+        <form class="col-lg form-inline justify-content-center">
+          <input type="text" name="recherche" class="form-control mb-2 mr-sm-2" placeholder="recherche..." v-on:keyup="search">
+          <select v-on:change="changeScope" class="form-control mb-2 mr-sm-2">
+            <option value="all">Tout</option>
+            <option value="title">Titre</option>
+            <option value="author">Auteur</option>
+            <option value="publisher">Éditeur</option>
+            <option value="tag">Mots-clés</option>
+            <option value="summary">Résumé</option>
+          </select>
+        </form>
+        <v-link class="col-lg align-self-center text-center" v-bind:href="'/biblio-jeunesse/vue/tags/'">Mots-clés</v-link>
+      </header>
+      <main>
+        <app-router v-bind:route="currentRoute"></main-layout>
+      </main>
+      <footer class="fixed-bottom text-right border-top border-primary p-1">
+        <small class="p-2">
+          Développé par <a href="https://wwww.github.com/corbin-c" title="Consulter le profil Github du développeur">Clément Corbin</a>
+        </small>
+      </footer>
+    </div>
+  </body>
+<script type="module">
+import { Biblio } from "/biblio-jeunesse/vue/biblio.js";
+import { appRouter } from "/biblio-jeunesse/vue/router.vue.js";
+import { vLink } from "/biblio-jeunesse/vue/vlink.vue.js";
+
+let bib = new Biblio("/biblio-jeunesse/output.min.json");
+let shuffle = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+(async () => {
+  let app = new Vue({
+    el: '#app',
+    data: {
+      appName: "Biblio jeunesse",
+      collection: shuffle(await bib.books),
+      authors: bib.authors,
+      currentRoute: window.location.pathname.slice(20),
+      searchScope: "all",
+      searchTerm: "",
+      tileShown: "",
+    },
+    errorCaptured(err,vm,info) {
+      this.currentRoute = "/404"
+    },
+    components: {
+      "app-router": appRouter,
+      "v-link": vLink
+    },
+    created() {
+      this.$on("tileClicked",this.tileClicked);
+    },
+    methods: {
+      tileClicked: function(id) {
+        this.tileShown = id;
+      },
+      backHome: function() {
+        document.querySelector("input").value = "";
+        this.collection = shuffle(this.collection);
+        this.$emit("search",
+          { term: "",
+            scope: "all" });
+      },
+      search: function(e) {
+        if (typeof e !== "undefined") {
+          this.searchTerm = e.target.value;
+        }
+        this.currentRoute = "/";
+        this.$emit("search",
+          { term: this.searchTerm,
+            scope: this.searchScope }
+        );
+      },
+      changeScope: function(e) {
+        this.searchScope = e.target.value;
+        this.search();
+      }
+    }
+  });
+  window.addEventListener('popstate', () => {
+    app.currentRoute = window.location.pathname.slice(20)
+  });
+  document.querySelector(".loader").remove();
+  document.querySelector("#app").classList.remove("invisible");
+})();
+</script>
+</html>

@@ -1,0 +1,234 @@
+#!/usr/bin/node
+const fs = require("fs");
+const BNF = require("./src/bnf.js");
+const Babelio = require("./src/babelio.js");
+const GB = require("./src/googlebooks.js");
+const decitre = require("./src/decitre.js");
+const Utils = require("./src/utils.js");
+const enrichAuthors = require("./src/process_authors.js");
+require("./src/logger.js")(true);
+
+// CLI HELPERS:
+const INPUT_STRUCTURE = `Le fichier d'entrée doit être formaté comme suit :
+- Un livre par ligne
+- Deux colonnes obligatoires : Titre, auteurs
+- Deux colonnes facultatives : Résumé, ISBN
+- Colonnes séparées par des pipes : |
+- Auteurs séparés par des esperluettes : &
+
+Exemple :
+Titre 1 | Auteur1 & Auteur 2 & Auteur 3 | Résumé
+Titre 2 | | | ISBN
+`;
+const ARGS_STRUCTURE = {
+  process: process.argv[1].split("/").slice(-1),
+  mandatory: {
+    "input":[],
+    "output":[]
+  },
+  optional: [
+    "errors"
+  ],
+};
+const checkArgs = (arguments) => {
+  Object.keys(ARGS_STRUCTURE.mandatory).map(e => {
+    if (typeof arguments[e] === "undefined") {
+      throw new Error("Argument obligatoire: "+e)
+    }
+  });
+}
+const help = () => {
+    let h = `Usage: `+ARGS_STRUCTURE.process+` `
+    +Object.keys(ARGS_STRUCTURE.mandatory).join(" ")+` [OPTIONS]
+\nOptions:\t\tSyntaxe: --KEY=VALUE
+\t`+ARGS_STRUCTURE.optional.join("\n\t")+`\n`;
+    console.log(h);
+    process.exit();
+}
+const ARGS = (() => {
+  let args = {};
+  process.argv.slice(2).map((e,i) => {
+    if (i == 0) {
+      if (e == "--help") {
+        console.log(INPUT_STRUCTURE);
+        help();
+      }
+      return ["input",e];
+    } else if (i == 1) {
+      return ["output",e];
+    } else {
+      if (e.slice(0,2) == "--") {
+        return e.slice(2).split("=");
+      } else {
+        return [e,true];
+      }
+    }
+  }).map(e => { args[e[0]] = e[1] });
+  return args;
+})();
+const DIE = (e) => {
+  console.warn(e+"\n");
+  help();
+}
+let writeErrorLog = (livre) => {
+  if (typeof ARGS.errors !== "undefined") {
+    let content;
+    try {
+      content = fs.readFileSync(ARGS.errors,"utf8")+"\n";
+    } catch {
+      content = "";
+    }
+    fs.writeFileSync(ARGS.errors, content+livre.titre+" | "+livre.auteurs.join(" & ")); 
+  }
+}
+let getKey = () => {
+  return new Promise((resolve,reject) => {
+    let stdin = process.stdin;
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding("utf8");
+    stdin.on("data", key => {
+      resolve(key);
+    });
+  });
+}
+
+//enrichments functions:
+let enrichments = {
+  BNF,
+  Babelio,
+  decitre,
+  GoogleBooks: GB
+}
+let enrich = async (livre) => {
+  livre.enrichments = {};
+  livre.enriched = false;
+  await Promise.all(Object.keys(enrichments).map(async e => {
+    if (e != "decitre") {
+      let results = await enrichments[e].module.enrich(livre);
+      livre.enrichments[e] = results;
+      if (results.featuresFound > 0) {
+        enrichments[e].success++;
+        livre.enriched = true;
+      }
+    }
+  }));
+  if (livre.enriched) {
+    let ean = (Object.keys(livre.enrichments)
+      .find(e => typeof livre.enrichments[e].isbn !== "undefined"));
+    if (typeof ean !== "undefined") {
+      ean = (livre.enrichments[ean].isbn);
+      livre.enrichments.decitre = await enrichments.decitre.module.enrich(ean);
+      if (livre.enrichments.decitre.featuresFound > 0) {
+        enrichments.decitre.success++;
+      }
+    }
+  } else if (typeof livre.ean !== "undefined") {
+      livre.enrichments.decitre = await enrichments.decitre.module.enrich(livre.ean);
+      if (livre.enrichments.decitre.featuresFound > 0) {
+        enrichments.decitre.success++;
+        livre.enriched = true;
+      }
+  }
+  return livre;
+}
+let main = async () => {
+  console.info("Bienvenue dans le programme d'enrichissement bibliographique");
+  await Utils.wait(2000);
+  let input,output;
+  Object.keys(enrichments).map(e => {
+    enrichments[e] = { module:enrichments[e], success:0 };
+  });
+  try {
+    input = fs.readFileSync(ARGS.input,"utf8");
+  } catch {
+    DIE("Le fichier input "+ARGS.input+" n'a pas pu être lu");
+  }
+  try {
+    output = fs.readFileSync(ARGS.output,"utf8");
+  } catch {
+    DIE("Le fichier de sortie "+ARGS.output+" n'a pas pu être lu");
+  }
+  input = input.split("\n").filter(e => e != "").map(e => {
+    let livre = {};
+    e = e.split("|");
+    livre.titre = Utils.normalize(e[0]);
+    livre.auteurs = e[1].split("&").map(auteur => Utils.normalize(auteur));
+    livre.resume = Utils.normalize(e[2] || "");
+    if (e.length > 3) {
+      livre.ean = Utils.normalize(e[3]);
+    }
+    return livre;
+  });
+  output = JSON.parse(output);
+  let id = 0;
+  output.books.map(e => {
+    if (parseInt(e.id.slice(1)) > id) {
+      id = parseInt(e.id.slice(1));
+    }
+  });
+  let processing = 1;
+  let success = 0;
+  console.clear();
+  for (let i of input) {
+    i.titre = i.titre.replace(/’/g,"'");
+    i.auteurs = i.auteurs.map(e => e.replace(/’/g,"'"));
+    i.id = "b"+id+processing;
+    let double = output.books.find(e => e.titre == i.titre);
+    let continu = true;
+    if (typeof double !== "undefined") {
+      console.warn(`/!\\ Il existe déjà un ouvrage dans la base avec ce titre: /!\\
+      `+i.titre+`
+      Auteurs : `+double.auteurs.join(" & "));
+      console.info("Souhaitez-vous continuer ? o/N");
+      let key = await getKey();
+      continu = (key.toLowerCase() == "o");
+    }
+    if (continu) {
+      if (i.auteurs == ["Collectif"]) { i.auteurs = [] };
+      i = await enrich(i);
+      if (i.enriched) {
+        success++;
+      } else {
+        writeErrorLog(i);
+      }
+      await Utils.wait();
+      console.info("# Livres traités: "+processing+"/"+input.length+"... ("+Math.round(processing/input.length*100)+"%)");
+      let info = Object.keys(enrichments).map(e => e+": "+enrichments[e].success).join(" | ");
+      console.info("# Enrichmissements: "+info+" | "+success+" globalement");
+      info = Object.keys(enrichments).map(e => e+": "+Math.round(enrichments[e].success/processing*100)+"%").join(" | ");
+      console.info("# Taux de succès: "+info+" | "+" globally: "+Math.round(success/processing*100)+"%");
+    } else {
+      i.discarded = true;
+    }
+    if (processing <= input.length) {
+      console.clear();
+    }
+    processing++;
+  }
+  console.clear();
+  input = input.filter(e => e.discarded !== true);
+  if (input.length == 0) {
+    console.info("Aucun livre n'a été ajouté");
+  } else {
+    console.info("enrichissement des auteurs...");
+    output.books = [...output.books,...input];
+    output = enrichAuthors(output,input);
+    fs.writeFileSync(ARGS.output, JSON.stringify(output));
+    console.info(`Taux de succès global à `+Math.round(success/input.length*100)+`%,
+le fichier de sortie `+ARGS.output+` a été complété.
+---
+Vous devriez désormais conserver et pousser ces modifications :
+git commit `+ARGS.output+` -m "ajout de `+input.length+` ouvrage`
++((input.length > 1) ? "s":"")+`"
+git push origin master`);
+  }
+  process.exit();
+};
+try {
+  checkArgs(ARGS);
+  main();
+} catch (e) {
+  DIE(e);
+}
+
