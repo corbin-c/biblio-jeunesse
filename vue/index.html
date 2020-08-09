@@ -51,8 +51,7 @@
 import { Biblio } from "/biblio-jeunesse/vue/biblio.js";
 import { appRouter } from "/biblio-jeunesse/vue/router.vue.js";
 import { vLink } from "/biblio-jeunesse/vue/vlink.vue.js";
-
-let bib = new Biblio("/biblio-jeunesse/biblio.min.json");
+let bib = new Biblio("/biblio-jeunesse/biblio.min.json","/biblio-jeunesse/lastupd");
 let shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

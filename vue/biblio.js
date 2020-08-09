@@ -176,13 +176,24 @@ let Book = class {
   }
 }
 let Biblio = class {
-  constructor(jsonFile) {
+  constructor(jsonFile,lastupd) {
     this.isReady = {};
     this.ready = new Promise((resolve,reject) => { this.isReady = resolve; });
     this._raw = {};
     (async () => {
-      let list = await fetch(jsonFile);
-      list = await list.json();
+      let lastUpd = await fetch(lastupd);
+      lastUpd = await lastUpd.text();
+      lastUpd = lastUpd.split("\n")[0];
+      let list;
+      if ((typeof localStorage.getItem("biblio") == null) ||
+        (localStorage.getItem("lastUpd") !== lastUpd)) {
+        list = await fetch(jsonFile);
+        list = await list.json();
+        localStorage.setItem("lastUpd", lastUpd);
+        localStorage.setItem("biblio", JSON.stringify(list));
+      } else {
+        list = JSON.parse(localStorage.getItem("biblio"));
+      }
       list.books = list.books.map(e => new Book(e));
       Authors = new Authors(list.authors);
       this.authors = Authors;
