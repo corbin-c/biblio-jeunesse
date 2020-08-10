@@ -50,9 +50,6 @@ footer {
 .img-container .img-thumbnail {
   width: max-content;
 }
-.img-container img {
-  height: 80vh;
-}
 section {
   margin-bottom: 4rem;
 }
