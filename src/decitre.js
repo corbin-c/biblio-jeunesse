@@ -34,14 +34,22 @@ let decitre = {
     let html = await fetch("https://www.decitre.fr/livres/"+ean+".html");
     html = await html.text();
     html = cheerio.load(html);
+    if (html("title").text() == "Whoops ! Page non trouvée...") {
+      throw new Error("404");
+    }
     return html;
   },
   enrich: async (ean) => { //update this
-    // check if 404
     // discard covers not found
+    let book;
+    let features;
     console.info("Requesting Decitre for EAN "+ean);
-    let book = await decitre.getBook(ean);
-    let features = decitre.getFeatures(book);
+    try {
+      book = await decitre.getBook(ean);
+    } catch {
+      return { featuresFound: 0 };
+    }
+    features = decitre.getFeatures(book);
     Object.keys(decitre.enrichedData).map(e => {
       try {
         let value = decitre.enrichedData[e](book);

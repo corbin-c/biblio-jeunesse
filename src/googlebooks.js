@@ -67,7 +67,7 @@ let GB = {
       return e;
     });
     let book = Utils.findMoreSimilar(livre.titre,books,"title")[0];
-    if (natural.JaroWinklerDistance(livre.titre,book.title) < 0.8) {
+    if (natural.JaroWinklerDistance(livre.titre,book.title) < 0.85) {
       console.error("no book found");
       return enriched;
     }
