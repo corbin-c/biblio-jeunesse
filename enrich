@@ -215,7 +215,7 @@ let main = async () => {
     output.books = [...output.books,...input];
     output = enrichAuthors(output,input);
     fs.writeFileSync(ARGS.output, JSON.stringify(output));
-    fs.writeFileSync("./lastupd", (new Date()).valueOf());
+    fs.writeFileSync("./lastupd", (new Date()).valueOf().toString());
     console.info(`Taux de succès global à `+Math.round(success/input.length*100)+`%,
 le fichier de sortie `+ARGS.output+` a été complété.
 ---
