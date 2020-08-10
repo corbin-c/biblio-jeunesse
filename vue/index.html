@@ -118,12 +118,12 @@ let shuffle = (array) => {
   });
   document.querySelector(".loader").remove();
   document.querySelector("#app").classList.remove("invisible");
-  if (window.location.search !== "") {
-    app.currentRoute = window.location.search.slice(1);
+  if (window.location.search.includes("path=")) {
+    app.currentRoute = window.location.search.split("path=")[1];
     window.history.pushState(
       null,
-      "/biblio-jeunesse/vue"+window.location.search.slice(1),
-      "/biblio-jeunesse/vue"+window.location.search.slice(1)
+      "/biblio-jeunesse/vue"+window.location.split("path=")[1],
+      "/biblio-jeunesse/vue"+window.location.split("path=")[1]
     )
   }
 })();
