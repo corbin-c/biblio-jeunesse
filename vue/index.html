@@ -122,8 +122,8 @@ let shuffle = (array) => {
     app.currentRoute = window.location.search.split("path=")[1];
     window.history.pushState(
       null,
-      "/biblio-jeunesse/vue"+window.location.split("path=")[1],
-      "/biblio-jeunesse/vue"+window.location.split("path=")[1]
+      "/biblio-jeunesse/vue"+window.location.search.split("path=")[1],
+      "/biblio-jeunesse/vue"+window.location.search.split("path=")[1]
     )
   }
 })();
