@@ -154,10 +154,13 @@ let main = async () => {
     e = e.split("|");
     livre.titre = Utils.normalize(e[0]);
     livre.auteurs = e[1].split("&").map(auteur => Utils.normalize(auteur));
-    livre.resume = Utils.normalize(e[2] || "");
+    if (e.length > 2) {
+      livre.resume = Utils.normalize(e[2]);
+    }
     if (e.length > 3) {
       livre.ean = Utils.normalize(e[3]);
     }
+    livre.tags = {};
     return livre;
   });
   output = JSON.parse(output);
