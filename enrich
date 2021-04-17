@@ -154,7 +154,7 @@ let main = async () => {
     e = e.split("|");
     livre.titre = Utils.normalize(e[0]);
     livre.auteurs = e[1].split("&").map(auteur => Utils.normalize(auteur));
-    if (e.length > 2) {
+    if (e.length > 2 && Utils.normalize(e[2]) !== "") {
       livre.resume = Utils.normalize(e[2]);
     }
     if (e.length > 3) {
